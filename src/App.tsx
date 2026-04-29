@@ -165,7 +165,6 @@ const MARKET_SPREADS: Record<string, string> = {
 function App() {
 	const [showDemo, setShowDemo] = useState(false);
 	const [metricTick, setMetricTick] = useState(0);
-	const [isPageLoaded, setIsPageLoaded] = useState(false);
 
 	const { prices, loading, error } = useCryptoPrices();
 	const btcTicker = prices.BTC;
