@@ -225,14 +225,8 @@ function App() {
 			setMetricTick((currentTick) => currentTick + 1);
 		}, 900);
 
-		// Set autoPlay to true when page is fully loaded
-		const timer = window.setTimeout(() => {
-			setIsPageLoaded(true);
-		}, 3000);
-
 		return () => {
 			window.clearInterval(interval);
-			window.clearTimeout(timer);
 		};
 	}, []);
 
