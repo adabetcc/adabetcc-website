@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Bash(rtk read *)",
+      "Bash(pnpm dev *)",
+      "Bash(open http://localhost:5174/)",
+      "Bash(rtk curl *)"
+    ]
+  }
+}

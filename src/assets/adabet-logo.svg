@@ -1,0 +1,11 @@
+<svg width="180" height="60" viewBox="0 0 180 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background hexagon -->
+  <polygon points="90 0 135 22.5 90 45 45 22.5 90 0" fill="#1A1A1A"/>
+  <polygon points="90 0 135 22.5 90 45 45 22.5 90 0" stroke="#00FF88" stroke-width="1"/>
+
+  <!-- AdaBet text -->
+  <text x="90" y="32" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">AdaBet</text>
+
+  <!-- Trading symbol (A↔B) -->
+  <text x="90" y="52" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#00FF88">A ↔ B</text>
+</svg>
