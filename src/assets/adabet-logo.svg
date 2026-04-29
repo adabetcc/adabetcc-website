@@ -1,11 +1,29 @@
-<svg width="180" height="60" viewBox="0 0 180 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background hexagon -->
-  <polygon points="90 0 135 22.5 90 45 45 22.5 90 0" fill="#1A1A1A"/>
-  <polygon points="90 0 135 22.5 90 45 45 22.5 90 0" stroke="#00FF88" stroke-width="1"/>
+<svg width="220" height="64" viewBox="0 0 220 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="adabet-logo-title">
+  <title id="adabet-logo-title">AdaBet</title>
+  <defs>
+    <linearGradient id="adabet-mark" x1="8" y1="8" x2="62" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3DDBD9"/>
+      <stop offset="0.55" stop-color="#00FF88"/>
+      <stop offset="1" stop-color="#B6FF6A"/>
+    </linearGradient>
+    <linearGradient id="adabet-word" x1="78" y1="11" x2="214" y2="53" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#C8D8CF"/>
+    </linearGradient>
+    <filter id="adabet-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0 0 0 0 0 1 0 0 0 0 0.533 0 0 0 0.32 0"/>
+      <feBlend in2="SourceGraphic" mode="screen"/>
+    </filter>
+  </defs>
 
-  <!-- AdaBet text -->
-  <text x="90" y="32" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF">AdaBet</text>
+  <g filter="url(#adabet-glow)">
+    <path d="M32 5L58.5 20.5V43.5L32 59L5.5 43.5V20.5L32 5Z" fill="#07110B" stroke="url(#adabet-mark)" stroke-width="2"/>
+    <path d="M20 42L31.9 15L44 42H37.2L35 36.2H28.9L26.8 42H20ZM30.6 31.1H33.5L32 26.9L30.6 31.1Z" fill="#F6FFF9"/>
+    <path d="M47.5 20.5H57M57 20.5L52.7 16.2M57 20.5L52.7 24.8" stroke="#00FF88" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M16.5 43.5H7M7 43.5L11.3 39.2M7 43.5L11.3 47.8" stroke="#3DDBD9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 
-  <!-- Trading symbol (A↔B) -->
-  <text x="90" y="52" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#00FF88">A ↔ B</text>
+  <text x="76" y="38" fill="url(#adabet-word)" font-family="Avenir Next, Satoshi, Inter, system-ui, sans-serif" font-size="31" font-weight="800">AdaBet</text>
+  <text x="78" y="54" fill="#7F9388" font-family="SF Mono, Roboto Mono, ui-monospace, monospace" font-size="9" font-weight="700">EXECUTION INFRA</text>
 </svg>

@@ -1,517 +1,537 @@
-import React, { useState } from "react";
+import { Player } from "@remotion/player";
+import { Fragment, useEffect, useState } from "react";
+import logoImage from "./assets/adabet-logo.svg";
+import heroImage from "./assets/hero.svg";
+import {
+	CRYPTO_TICKERS,
+	formatTickerChange,
+	formatTickerPrice,
+} from "./cryptoPrices";
+import { QuantStrategyAnimation } from "./QuantStrategyAnimation";
+import { useCryptoPrices } from "./useCryptoPrices";
 
-// Crypto icons as inline SVGs
-const BitcoinIcon = () => (
-	<svg viewBox="0 0 48 48" fill="none">
-		<circle cx="24" cy="24" r="23" stroke="#f7931a" strokeWidth="2" />
+const ArrowIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
 		<path
-			d="M24 12v24m-6-6l6-18 6 6-6 18-6-6z"
-			stroke="#f7931a"
+			d="M5 12h14M12 5l7 7-7 7"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+const CalendarIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+		<rect
+			x="3"
+			y="4"
+			width="18"
+			height="17"
+			rx="3"
+			stroke="currentColor"
+			strokeWidth="2"
+		/>
+		<path
+			d="M8 2v4M16 2v4M3 10h18"
+			stroke="currentColor"
 			strokeWidth="2"
 			strokeLinecap="round"
 		/>
 	</svg>
 );
 
-const EthereumIcon = () => (
-	<svg viewBox="0 0 48 48" fill="none">
-		<circle cx="24" cy="24" r="23" stroke="#627eea" strokeWidth="2" />
-		<circle cx="24" cy="24" r="12" stroke="#627eea" strokeWidth="2" />
-		<circle cx="24" cy="24" r="4" fill="#627eea" />
-	</svg>
-);
-
-const SolanaIcon = () => (
-	<svg viewBox="0 0 48 48" fill="none">
-		<circle cx="24" cy="24" r="23" stroke="#9945ff" strokeWidth="2" />
+const CloseIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
 		<path
-			d="M24 6l12 21h-10l-2-13h-4l-2 13H12z"
-			stroke="#9945ff"
+			d="M6 6l12 12M18 6L6 18"
+			stroke="currentColor"
 			strokeWidth="2"
+			strokeLinecap="round"
 		/>
 	</svg>
 );
 
+const SignalIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+		<path
+			d="M4 17l5-5 4 4 7-9"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M16 7h4v4"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+const RoutingIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+		<path
+			d="M6 5h3a4 4 0 014 4v6a4 4 0 004 4h1"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M6 19h2a4 4 0 004-4V9a4 4 0 014-4h2"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M4 5h2M18 5h2M4 19h2M18 19h2"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+	</svg>
+);
+
+const AnalyticsIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+		<path
+			d="M4 19V5M4 19h16"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M8 15v-4M12 15V8M16 15v-7"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+		/>
+	</svg>
+);
+
+const ShieldIcon = () => (
+	<svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+		<path
+			d="M12 21s7-3.5 7-9V5l-7-3-7 3v7c0 5.5 7 9 7 9z"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M9 12l2 2 4-5"
+			stroke="currentColor"
+			strokeWidth="2"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+const featureCards = [
+	{
+		title: "Signal intelligence",
+		body: "Blend exchange microstructure, volatility regimes, and live order-book movement into model-ready trading signals.",
+		icon: <SignalIcon />,
+	},
+	{
+		title: "Smart order routing",
+		body: "Route orders across venues with latency-aware execution, slippage controls, and cross-exchange spread capture.",
+		icon: <RoutingIcon />,
+	},
+	{
+		title: "Live portfolio analytics",
+		body: "Monitor exposure, P&L, fills, and strategy health from one operating view with fast market refreshes.",
+		icon: <AnalyticsIcon />,
+	},
+	{
+		title: "Risk controls",
+		body: "Set position limits, circuit breakers, and pre-trade validation so automated strategies stay inside mandate.",
+		icon: <ShieldIcon />,
+	},
+];
+
+const MARKET_TABLE_SYMBOLS = ["BTC", "ETH", "SOL"];
+
+const MARKET_SPREADS: Record<string, string> = {
+	BTC: "34 bps",
+	ETH: "21 bps",
+	SOL: "46 bps",
+};
+
 function App() {
 	const [showDemo, setShowDemo] = useState(false);
+	const [metricTick, setMetricTick] = useState(0);
+	const [isPageLoaded, setIsPageLoaded] = useState(false);
+
+	const { prices, loading, error } = useCryptoPrices();
+	const btcTicker = prices.BTC;
+	const btcPrice = btcTicker?.price ?? 77710;
+	const btcChange24h = btcTicker?.change24h ?? 1.4;
+	const tickerItems = CRYPTO_TICKERS.map(({ symbol, pair }) => {
+		const ticker = prices[symbol];
+
+		return {
+			symbol: pair,
+			price: ticker ? formatTickerPrice(ticker.price) : "Loading",
+			change: ticker
+				? formatTickerChange(ticker.change24h)
+				: error
+					? "Offline"
+					: "Syncing",
+			isDown: ticker ? ticker.change24h < 0 : false,
+		};
+	});
+	const marketRows = CRYPTO_TICKERS.filter(({ symbol }) =>
+		MARKET_TABLE_SYMBOLS.includes(symbol),
+	).map(({ symbol, pair }) => {
+		const ticker = prices[symbol];
+
+		return {
+			symbol,
+			pair,
+			price: ticker
+				? formatTickerPrice(ticker.price)
+				: loading
+					? "Loading"
+					: "--",
+			change: ticker
+				? formatTickerChange(ticker.change24h)
+				: error
+					? "Offline"
+					: "Syncing",
+			spread: MARKET_SPREADS[symbol],
+			isDown: ticker ? ticker.change24h < 0 : false,
+			isLoading: !ticker && loading,
+		};
+	});
+	const positivePnl =
+		12 +
+		Math.abs(btcChange24h) * 0.58 +
+		(metricTick % 28) * 0.19 +
+		Math.abs(Math.sin((btcPrice + metricTick * 11) / 240)) * 0.42;
+	const openOrders = 248 + metricTick * 3 + Math.floor(btcPrice % 17);
+	const slippage = Math.max(
+		0.03,
+		0.11 -
+			Math.min(Math.abs(btcChange24h), 9) * 0.006 +
+			(metricTick % 6) * 0.002,
+	);
+
+	useEffect(() => {
+		const interval = window.setInterval(() => {
+			setMetricTick((currentTick) => currentTick + 1);
+		}, 900);
+
+		// Set autoPlay to true when page is fully loaded
+		const timer = window.setTimeout(() => {
+			setIsPageLoaded(true);
+		}, 3000);
+
+		return () => {
+			window.clearInterval(interval);
+			window.clearTimeout(timer);
+		};
+	}, []);
 
 	return (
 		<>
-			{/* Header */}
-			<header className="header">
-				<div className="logo">
-					<svg width="120" height="42" viewBox="0 0 180 60" fill="none">
-						<polygon points="90 0 135 22.5 90 45 45 22.5 90 0" fill="#1A1A1A" />
-						<polygon
-							points="90 0 135 22.5 90 45 45 22.5 90 0"
-							stroke="#00FF88"
-							strokeWidth="1"
-						/>
-						<text
-							x="90"
-							y="32"
-							textAnchor="middle"
-							fontFamily="system-ui"
-							fontSize="24"
-							fontWeight="700"
-							fill="#FFFFFF"
-						>
-							AdaBet
-						</text>
-						<text
-							x="90"
-							y="52"
-							textAnchor="middle"
-							fontFamily="system-ui"
-							fontSize="10"
-							fill="#00FF88"
-						>
-							A ↔ B
-						</text>
-					</svg>
-				</div>
-				<nav>
+			<header className="site-header">
+				<a className="brand" href="/" aria-label="AdaBet homepage">
+					<img src={logoImage} alt="" />
+				</a>
+				<nav aria-label="Primary navigation">
 					<ul className="nav-links">
+						<li>
+							<a href="#platform">Platform</a>
+						</li>
 						<li>
 							<a href="#features">Features</a>
 						</li>
 						<li>
-							<a href="#">Platform</a>
-						</li>
-						<li>
-							<a href="#">Pricing</a>
+							<a href="#markets">Markets</a>
 						</li>
 					</ul>
 				</nav>
+				<button className="header-action" onClick={() => setShowDemo(true)}>
+					Request demo
+				</button>
 			</header>
 
-			{/* Hero */}
-			<section className="hero">
-				<div className="hero-content">
-					<h1>Quantum Trading, Refined</h1>
-					<p className="subtitle">
-						AdaBet delivers institutional-grade algorithmic trading with
-						AI-driven signal processing, lightning-fast execution, and real-time
-						portfolio analytics. Built for crypto, scaled for market making.
-					</p>
-					<div className="hero-buttons">
-						<button
-							className="btn btn-primary"
-							onClick={() => setShowDemo(true)}
+			<main>
+				<section className="hero" aria-labelledby="hero-title">
+					<div className="hero-shell">
+						<div className="hero-copy">
+							<p className="eyebrow">Crypto execution infrastructure</p>
+							<h1 id="hero-title">
+								Algorithmic trading built for fast markets
+							</h1>
+							<p className="hero-subtitle">
+								AdaBet gives crypto trading teams a cleaner command layer for
+								signal processing, order routing, and live risk monitoring
+								across major venues.
+							</p>
+							<div className="hero-actions">
+								<button
+									className="btn btn-primary"
+									onClick={() => setShowDemo(true)}
+								>
+									Start free trial
+									<ArrowIcon />
+								</button>
+								<button
+									className="btn btn-secondary"
+									onClick={() => setShowDemo(true)}
+								>
+									<CalendarIcon />
+									Schedule demo
+								</button>
+							</div>
+							<dl className="stats" aria-label="AdaBet platform metrics">
+								<div className="stat-item">
+									<dt>Volume processed</dt>
+									<dd>$6.2B+</dd>
+								</div>
+								<div className="stat-item">
+									<dt>Average execution</dt>
+									<dd>12ms</dd>
+								</div>
+								<div className="stat-item">
+									<dt>Platform uptime</dt>
+									<dd>99.99%</dd>
+								</div>
+							</dl>
+						</div>
+
+						<div
+							className="hero-visual"
+							aria-label="AdaBet trading console preview"
 						>
-							Start Free Trial
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-								<path
-									d="M5 12h14M12 5l7 7-7 7"
-									stroke="#000"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</button>
-						<button className="btn btn-secondary">
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-								<rect
-									x="2"
-									y="2"
-									width="20"
-									height="20"
-									rx="4"
-									stroke="currentColor"
-									strokeWidth="2"
-								/>
-								<path
-									d="M2 12h20M12 2v20"
-									stroke="currentColor"
-									strokeWidth="2"
-								/>
-							</svg>
-							Schedule Demo
-						</button>
-					</div>
-				</div>
-
-				{/* Stats */}
-				<div className="stats">
-					<div className="stat-item">
-						<div className="stat-value">$4.2B+</div>
-						<div className="stat-label">Volume Processed</div>
-					</div>
-					<div className="stat-item">
-						<div className="stat-value">12ms</div>
-						<div className="stat-label">Avg Execution</div>
-					</div>
-					<div className="stat-item">
-						<div className="stat-value">99.99%</div>
-						<div className="stat-label">Uptime</div>
-					</div>
-				</div>
-			</section>
-
-			{/* Features */}
-			<section id="features" className="features">
-				<h2>Engineered for Alpha</h2>
-				<p>
-					From multi-exchange arbitrage to TWAP execution — AdaBet handles it
-					all with military-grade precision.
-				</p>
-				<div className="features-grid">
-					{/* Feature 1 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<path
-									d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
+							<img className="hero-orbit" src={heroImage} alt="" />
+							<div className="console-panel">
+								<div className="console-header">
+									<div>
+										<span>Strategy health</span>
+										<strong>BTC X strategy</strong>
+									</div>
+									<span className="live-pill">Live</span>
+								</div>
+								<div className="strategy-animation-card">
+									<Player
+										component={QuantStrategyAnimation}
+										durationInFrames={180}
+										fps={30}
+										compositionWidth={792}
+										compositionHeight={460}
+										inputProps={{ btcPrice, btcChange24h }}
+										loop
+										autoPlay={true}
+										playbackRate={1}
+										// controls={true}
+										style={{
+											width: "100%",
+											height: "100%",
+										}}
+									/>
+								</div>
+								<div className="console-grid">
+									<div>
+										<span>Net P&L</span>
+										<strong>+{positivePnl.toFixed(1)}%</strong>
+									</div>
+									<div>
+										<span>Orders</span>
+										<strong>{openOrders}</strong>
+									</div>
+									<div>
+										<span>Slippage</span>
+										<strong>{slippage.toFixed(2)}%</strong>
+									</div>
+								</div>
+							</div>
 						</div>
-						<h3>AI Signal Processing</h3>
+					</div>
+				</section>
+
+				<section id="platform" className="section platform-section">
+					<div className="section-copy">
+						<p className="eyebrow">Operating layer</p>
+						<h2>One workspace for signals, execution, and risk</h2>
 						<p>
-							Deep learning models analyze millions of data points across
-							exchanges to identify alpha opportunities before the crowd.
+							Replace scattered venue screens with a focused trading surface
+							that keeps strategy teams aligned on market state and execution
+							quality.
 						</p>
 					</div>
+					<div className="workflow-grid">
+						<article className="workflow-step">
+							<span>01</span>
+							<h3>Ingest</h3>
+							<p>
+								Normalize exchange data, order-book events, and portfolio state.
+							</p>
+						</article>
+						<article className="workflow-step">
+							<span>02</span>
+							<h3>Decide</h3>
+							<p>
+								Rank opportunities with model signals and configurable risk
+								checks.
+							</p>
+						</article>
+						<article className="workflow-step">
+							<span>03</span>
+							<h3>Execute</h3>
+							<p>
+								Deploy strategies with venue-aware routing and live guardrails.
+							</p>
+						</article>
+					</div>
+				</section>
 
-					{/* Feature 2 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<path
-									d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M3 14l4-3 4 3 4-3 4 3"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</div>
-						<h3>Multi-Exchange Execution</h3>
+				<section id="features" className="section features-section">
+					<div className="section-copy centered">
+						<p className="eyebrow">Capabilities</p>
+						<h2>Built for disciplined automated trading</h2>
 						<p>
-							Seamlessly execute across Binance, Coinbase, Kraken, and 50+
-							exchanges with unified order routing and cross-exchange arbitrage.
+							The homepage now leads with the workflows serious trading teams
+							evaluate first: signals, execution, analytics, and risk.
 						</p>
 					</div>
-
-					{/* Feature 3 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<rect
-									x="2"
-									y="3"
-									width="20"
-									height="14"
-									rx="2"
-									stroke="#00FF88"
-									strokeWidth="2"
-								/>
-								<line
-									x1="2"
-									y1="8"
-									x2="22"
-									y2="8"
-									stroke="#00FF88"
-									strokeWidth="2"
-								/>
-								<line
-									x1="8"
-									y1="14"
-									x2="16"
-									y2="14"
-									stroke="#00FF88"
-									strokeWidth="2"
-								/>
-								<line
-									x1="8"
-									y1="18"
-									x2="16"
-									y2="18"
-									stroke="#00FF88"
-									strokeWidth="2"
-								/>
-							</svg>
-						</div>
-						<h3>Real-Time Analytics</h3>
-						<p>
-							Monitor P&L, execution quality, and slippage with sub-millisecond
-							updates. Customize dashboards for any strategy.
-						</p>
+					<div className="features-grid">
+						{featureCards.map((feature) => (
+							<article className="feature-card" key={feature.title}>
+								<div className="feature-icon">{feature.icon}</div>
+								<h3>{feature.title}</h3>
+								<p>{feature.body}</p>
+							</article>
+						))}
 					</div>
+				</section>
 
-					{/* Feature 4 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<path
-									d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M8 11h8M12 7v8"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
+				<section id="markets" className="section markets-section">
+					<div className="market-panel">
+						<div className="market-copy">
+							<p className="eyebrow">Market coverage</p>
+							<h2>Live across major crypto venues</h2>
+							<p>
+								Track spreads, liquidity, and pair-level execution quality from
+								the same surface used to run strategies.
+							</p>
 						</div>
-						<h3>Market Making Bot</h3>
-						<p>
-							Deploy liquidity with adaptive order placement, spread management,
-							and inventory hedging across any asset class.
-						</p>
-					</div>
-
-					{/* Feature 5 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<circle
-									cx="12"
-									cy="12"
-									r="3"
-									stroke="#00FF88"
-									strokeWidth="2"
-								/>
-								<path
-									d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</div>
-						<h3>Advanced Risk Management</h3>
-						<p>
-							Pre-trade validation, position limits, and circuit breakers built
-							in. Never risk more than you can handle.
-						</p>
-					</div>
-
-					{/* Feature 6 */}
-					<div className="feature-card">
-						<div className="feature-icon">
-							<svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-								<path
-									d="M21 12V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2v-5"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M12 2v4"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M12 18v4"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M4.93 4.93l2.83 2.83"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M16.24 16.24l2.83 2.83"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M4.93 19.07l2.83-2.83"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-								<path
-									d="M16.24 7.76l2.83-2.83"
-									stroke="#00FF88"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								/>
-							</svg>
-						</div>
-						<h3>Backtesting Engine</h3>
-						<p>
-							Validate your strategies on historical data across multiple
-							timeframes. Simulate real market conditions with realistic fee
-							modeling.
-						</p>
-					</div>
-				</div>
-
-				{/* Crypto Icons */}
-				<div style={{ marginTop: "2rem", textAlign: "center" }}>
-					<p
-						style={{ color: "#666", marginBottom: "1rem", fontSize: "0.9rem" }}
-					>
-						Live on major exchanges
-					</p>
-					<div className="crypto-icons">
-						<div className="crypto-icon" title="Bitcoin">
-							<BitcoinIcon />
-						</div>
-						<div className="crypto-icon" title="Ethereum">
-							<EthereumIcon />
-						</div>
-						<div className="crypto-icon" title="Solana">
-							<SolanaIcon />
+						<div
+							className="venue-table"
+							role="table"
+							aria-label="Market spread preview"
+						>
+							<div className="venue-row venue-head" role="row">
+								<span role="columnheader">Pair</span>
+								<span role="columnheader">Price</span>
+								<span role="columnheader">24h</span>
+								<span role="columnheader">Spread</span>
+							</div>
+							{marketRows.map((market) => (
+								<div className="venue-row" role="row" key={market.symbol}>
+									<span role="cell">{market.pair}</span>
+									<span className={market.isLoading ? "muted" : ""} role="cell">
+										{market.isLoading || market.price === "--"
+											? market.price
+											: `$${market.price}`}
+									</span>
+									<span
+										className={market.isDown ? "negative" : "positive"}
+										role="cell"
+									>
+										{market.change}
+									</span>
+									<span role="cell">{market.spread}</span>
+								</div>
+							))}
 						</div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</main>
 
-			{/* Lower Ticker */}
-			<div className="ticker">
+			<div className="ticker" aria-label="Live crypto prices">
 				<div className="ticker-track">
 					{[...Array(2)].map((_, i) => (
-						<React.Fragment key={i}>
-							<TickerItem symbol="BTC/USDT" price="64235.50" change="+2.34%" />
-							<TickerItem symbol="ETH/USDT" price="3456.20" change="+1.87%" />
-							<TickerItem symbol="SOL/USDT" price="142.80" change="+5.12%" />
-							<TickerItem symbol="XRP/USDT" price="0.5234" change="-0.45%" />
-							<TickerItem symbol="ADA/USDT" price="0.4521" change="+0.89%" />
-							<TickerItem symbol="DOGE/USDT" price="0.1234" change="+3.21%" />
-							<TickerItem symbol="AVAX/USDT" price="35.67" change="+1.56%" />
-							<TickerItem symbol="MATIC/USDT" price="0.8921" change="-1.23%" />
-						</React.Fragment>
+						<Fragment key={i}>
+							{tickerItems.map((ticker) => (
+								<TickerItem
+									key={`${i}-${ticker.symbol}`}
+									symbol={ticker.symbol}
+									price={ticker.price}
+									change={ticker.change}
+									isDown={ticker.isDown}
+									isLoading={loading && ticker.price === "Loading"}
+								/>
+							))}
+						</Fragment>
 					))}
 				</div>
 			</div>
 
-			{/* Footer */}
 			<footer className="footer">
 				<div className="footer-content">
-					<div className="footer-logo">
-						<svg width="80" height="32" viewBox="0 0 180 60" fill="none">
-							<polygon
-								points="90 0 135 22.5 90 45 45 22.5 90 0"
-								fill="#1A1A1A"
-							/>
-							<polygon
-								points="90 0 135 22.5 90 45 45 22.5 90 0"
-								stroke="#00FF88"
-								strokeWidth="1"
-							/>
-							<text
-								x="90"
-								y="32"
-								textAnchor="middle"
-								fontFamily="system-ui"
-								fontSize="20"
-								fontWeight="600"
-								fill="#FFFFFF"
-							>
-								AdaBet
-							</text>
-						</svg>
-						<span>Algorithmic Trading Platform</span>
-					</div>
+					<a className="footer-brand" href="/" aria-label="AdaBet homepage">
+						<img src={logoImage} alt="" />
+						<span>Algorithmic trading platform</span>
+					</a>
 					<ul className="footer-links">
 						<li>
-							<a href="#">Documentation</a>
+							<a href="#platform">Platform</a>
 						</li>
 						<li>
-							<a href="#">API</a>
+							<a href="#features">Features</a>
 						</li>
 						<li>
-							<a href="#">Status</a>
+							<a href="#markets">Markets</a>
 						</li>
 						<li>
-							<a href="#">Blog</a>
-						</li>
-						<li>
-							<a href="#">Contact</a>
+							<a href="mailto:hello@adabet.cc">Contact</a>
 						</li>
 					</ul>
 				</div>
 			</footer>
 
-			{/* Demo Modal */}
 			{showDemo && (
-				<div
-					style={{
-						position: "fixed",
-						inset: 0,
-						background: "rgba(0, 0, 0, 0.8)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 200,
-						padding: "2rem",
-					}}
-				>
-					<div
-						style={{
-							background: "#111",
-							border: "1px solid #333",
-							borderRadius: "12px",
-							padding: "2rem",
-							maxWidth: "500px",
-							width: "100%",
-							textAlign: "center",
-						}}
+				<div className="modal-backdrop" role="presentation">
+					<section
+						className="modal-card"
+						role="dialog"
+						aria-modal="true"
+						aria-labelledby="demo-title"
 					>
-						<h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>
-							Demo Access
-						</h2>
-						<p style={{ color: "#999", marginBottom: "1.5rem" }}>
-							Get full access to AdaBet's institutional trading tools.
+						<button
+							className="modal-close"
+							onClick={() => setShowDemo(false)}
+							aria-label="Close demo request"
+						>
+							<CloseIcon />
+						</button>
+						<p className="eyebrow">Demo access</p>
+						<h2 id="demo-title">See AdaBet on live market workflows</h2>
+						<p>
+							Share your trading venue mix and strategy needs with the AdaBet
+							team. We will tailor the walkthrough around execution quality,
+							risk controls, and portfolio monitoring.
 						</p>
-						<button
-							className="btn btn-primary"
-							onClick={() => setShowDemo(false)}
-							style={{
-								width: "100%",
-								justifyContent: "center",
-								margin: "0.5rem 0",
-							}}
-						>
-							Request Demo
-						</button>
-						<button
-							className="btn btn-secondary"
-							onClick={() => setShowDemo(false)}
-							style={{ width: "100%", justifyContent: "center" }}
-						>
-							Cancel
-						</button>
-					</div>
+						<div className="modal-actions">
+							<a className="btn btn-primary" href="mailto:hello@adabet.cc">
+								Request demo
+								<ArrowIcon />
+							</a>
+							<button
+								className="btn btn-secondary"
+								onClick={() => setShowDemo(false)}
+							>
+								Cancel
+							</button>
+						</div>
+					</section>
 				</div>
 			)}
 		</>
@@ -522,16 +542,19 @@ function TickerItem({
 	symbol,
 	price,
 	change,
+	isDown,
+	isLoading,
 }: {
 	symbol: string;
 	price: string;
 	change: string;
+	isDown: boolean;
+	isLoading: boolean;
 }) {
-	const isDown = change.startsWith("-");
 	return (
 		<div className="ticker-item">
 			<span className="ticker-symbol">{symbol}</span>
-			<span className="ticker-price">${price}</span>
+			<span className="ticker-price">{isLoading ? price : `$${price}`}</span>
 			<span className={`ticker-change ${isDown ? "down" : ""}`}>{change}</span>
 		</div>
 	);

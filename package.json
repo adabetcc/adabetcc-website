@@ -7,11 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "node --test --experimental-strip-types test/cryptoPrices.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@remotion/player": "^4.0.454",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5"
+    "react-dom": "^19.2.5",
+    "remotion": "^4.0.454"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

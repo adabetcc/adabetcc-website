@@ -1,0 +1,215 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - link "AdaBet homepage" [ref=e4] [cursor=pointer]:
+      - /url: /
+    - navigation "Primary navigation" [ref=e5]:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Platform" [ref=e8] [cursor=pointer]:
+            - /url: "#platform"
+        - listitem [ref=e9]:
+          - link "Features" [ref=e10] [cursor=pointer]:
+            - /url: "#features"
+        - listitem [ref=e11]:
+          - link "Markets" [ref=e12] [cursor=pointer]:
+            - /url: "#markets"
+    - button "Request demo" [ref=e13] [cursor=pointer]
+  - main [ref=e14]:
+    - region "Algorithmic trading built for fast markets" [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - paragraph [ref=e18]: Crypto execution infrastructure
+          - heading "Algorithmic trading built for fast markets" [level=1] [ref=e19]
+          - paragraph [ref=e20]: AdaBet gives crypto trading teams a cleaner command layer for signal processing, order routing, and live risk monitoring across major venues.
+          - generic [ref=e21]:
+            - button "Start free trial" [ref=e22] [cursor=pointer]:
+              - text: Start free trial
+              - img [ref=e23]
+            - button "Schedule demo" [ref=e25] [cursor=pointer]:
+              - img [ref=e26]
+              - text: Schedule demo
+          - generic "AdaBet platform metrics" [ref=e29]:
+            - generic [ref=e30]:
+              - term [ref=e31]: Volume processed
+              - definition [ref=e32]: $4.2B+
+            - generic [ref=e33]:
+              - term [ref=e34]: Average execution
+              - definition [ref=e35]: 12ms
+            - generic [ref=e36]:
+              - term [ref=e37]: Platform uptime
+              - definition [ref=e38]: 99.99%
+        - generic "AdaBet trading console preview" [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]:
+                - generic [ref=e43]: Strategy health
+                - strong [ref=e44]: Market maker v4
+              - generic [ref=e45]: Live
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - generic [ref=e58]: Net P&L
+                - strong [ref=e59]: +18.7%
+              - generic [ref=e60]:
+                - generic [ref=e61]: Open orders
+                - strong [ref=e62]: "248"
+              - generic [ref=e63]:
+                - generic [ref=e64]: Slippage
+                - strong [ref=e65]: 0.08%
+    - generic [ref=e66]:
+      - generic [ref=e67]:
+        - paragraph [ref=e68]: Operating layer
+        - heading "One workspace for signals, execution, and risk" [level=2] [ref=e69]
+        - paragraph [ref=e70]: Replace scattered venue screens with a focused trading surface that keeps strategy teams aligned on market state and execution quality.
+      - generic [ref=e71]:
+        - article [ref=e72]:
+          - generic [ref=e73]: "01"
+          - heading "Ingest" [level=3] [ref=e74]
+          - paragraph [ref=e75]: Normalize exchange data, order-book events, and portfolio state.
+        - article [ref=e76]:
+          - generic [ref=e77]: "02"
+          - heading "Decide" [level=3] [ref=e78]
+          - paragraph [ref=e79]: Rank opportunities with model signals and configurable risk checks.
+        - article [ref=e80]:
+          - generic [ref=e81]: "03"
+          - heading "Execute" [level=3] [ref=e82]
+          - paragraph [ref=e83]: Deploy strategies with venue-aware routing and live guardrails.
+    - generic [ref=e84]:
+      - generic [ref=e85]:
+        - paragraph [ref=e86]: Capabilities
+        - heading "Built for disciplined automated trading" [level=2] [ref=e87]
+        - paragraph [ref=e88]: "The homepage now leads with the workflows serious trading teams evaluate first: signals, execution, analytics, and risk."
+      - generic [ref=e89]:
+        - article [ref=e90]:
+          - img [ref=e92]
+          - heading "Signal intelligence" [level=3] [ref=e95]
+          - paragraph [ref=e96]: Blend exchange microstructure, volatility regimes, and live order-book movement into model-ready trading signals.
+        - article [ref=e97]:
+          - img [ref=e99]
+          - heading "Smart order routing" [level=3] [ref=e103]
+          - paragraph [ref=e104]: Route orders across venues with latency-aware execution, slippage controls, and cross-exchange spread capture.
+        - article [ref=e105]:
+          - img [ref=e107]
+          - heading "Live portfolio analytics" [level=3] [ref=e110]
+          - paragraph [ref=e111]: Monitor exposure, P&L, fills, and strategy health from one operating view with fast market refreshes.
+        - article [ref=e112]:
+          - img [ref=e114]
+          - heading "Risk controls" [level=3] [ref=e117]
+          - paragraph [ref=e118]: Set position limits, circuit breakers, and pre-trade validation so automated strategies stay inside mandate.
+    - generic [ref=e120]:
+      - generic [ref=e121]:
+        - paragraph [ref=e122]: Market coverage
+        - heading "Live across major crypto venues" [level=2] [ref=e123]
+        - paragraph [ref=e124]: Track spreads, liquidity, and pair-level execution quality from the same surface used to run strategies.
+      - table "Market spread preview" [ref=e125]:
+        - row "Pair Price 24h Spread" [ref=e126]:
+          - columnheader "Pair" [ref=e127]
+          - columnheader "Price" [ref=e128]
+          - columnheader "24h" [ref=e129]
+          - columnheader "Spread" [ref=e130]
+        - row "BTC/USDT Loading Syncing 34 bps" [ref=e131]:
+          - cell "BTC/USDT" [ref=e132]
+          - cell "Loading" [ref=e133]
+          - cell "Syncing" [ref=e134]
+          - cell "34 bps" [ref=e135]
+        - row "ETH/USDT Loading Syncing 21 bps" [ref=e136]:
+          - cell "ETH/USDT" [ref=e137]
+          - cell "Loading" [ref=e138]
+          - cell "Syncing" [ref=e139]
+          - cell "21 bps" [ref=e140]
+        - row "SOL/USDT Loading Syncing 46 bps" [ref=e141]:
+          - cell "SOL/USDT" [ref=e142]
+          - cell "Loading" [ref=e143]
+          - cell "Syncing" [ref=e144]
+          - cell "46 bps" [ref=e145]
+  - generic "Live crypto prices" [ref=e146]:
+    - generic [ref=e147]:
+      - generic [ref=e148]:
+        - generic [ref=e149]: BTC/USDT
+        - generic [ref=e150]: Loading
+        - generic [ref=e151]: Syncing
+      - generic [ref=e152]:
+        - generic [ref=e153]: ETH/USDT
+        - generic [ref=e154]: Loading
+        - generic [ref=e155]: Syncing
+      - generic [ref=e156]:
+        - generic [ref=e157]: SOL/USDT
+        - generic [ref=e158]: Loading
+        - generic [ref=e159]: Syncing
+      - generic [ref=e160]:
+        - generic [ref=e161]: XRP/USDT
+        - generic [ref=e162]: Loading
+        - generic [ref=e163]: Syncing
+      - generic [ref=e164]:
+        - generic [ref=e165]: BNB/USDT
+        - generic [ref=e166]: Loading
+        - generic [ref=e167]: Syncing
+      - generic [ref=e168]:
+        - generic [ref=e169]: ADA/USDT
+        - generic [ref=e170]: Loading
+        - generic [ref=e171]: Syncing
+      - generic [ref=e172]:
+        - generic [ref=e173]: DOGE/USDT
+        - generic [ref=e174]: Loading
+        - generic [ref=e175]: Syncing
+      - generic [ref=e176]:
+        - generic [ref=e177]: AVAX/USDT
+        - generic [ref=e178]: Loading
+        - generic [ref=e179]: Syncing
+      - generic [ref=e180]:
+        - generic [ref=e181]: DOT/USDT
+        - generic [ref=e182]: Loading
+        - generic [ref=e183]: Syncing
+      - generic [ref=e184]:
+        - generic [ref=e185]: BTC/USDT
+        - generic [ref=e186]: Loading
+        - generic [ref=e187]: Syncing
+      - generic [ref=e188]:
+        - generic [ref=e189]: ETH/USDT
+        - generic [ref=e190]: Loading
+        - generic [ref=e191]: Syncing
+      - generic [ref=e192]:
+        - generic [ref=e193]: SOL/USDT
+        - generic [ref=e194]: Loading
+        - generic [ref=e195]: Syncing
+      - generic [ref=e196]:
+        - generic [ref=e197]: XRP/USDT
+        - generic [ref=e198]: Loading
+        - generic [ref=e199]: Syncing
+      - generic [ref=e200]:
+        - generic [ref=e201]: BNB/USDT
+        - generic [ref=e202]: Loading
+        - generic [ref=e203]: Syncing
+      - generic [ref=e204]:
+        - generic [ref=e205]: ADA/USDT
+        - generic [ref=e206]: Loading
+        - generic [ref=e207]: Syncing
+      - generic [ref=e208]:
+        - generic [ref=e209]: DOGE/USDT
+        - generic [ref=e210]: Loading
+        - generic [ref=e211]: Syncing
+      - generic [ref=e212]:
+        - generic [ref=e213]: AVAX/USDT
+        - generic [ref=e214]: Loading
+        - generic [ref=e215]: Syncing
+      - generic [ref=e216]:
+        - generic [ref=e217]: DOT/USDT
+        - generic [ref=e218]: Loading
+        - generic [ref=e219]: Syncing
+  - contentinfo [ref=e220]:
+    - generic [ref=e221]:
+      - link "AdaBet homepage" [ref=e222] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e223]: Algorithmic trading platform
+      - list [ref=e224]:
+        - listitem [ref=e225]:
+          - link "Platform" [ref=e226] [cursor=pointer]:
+            - /url: "#platform"
+        - listitem [ref=e227]:
+          - link "Features" [ref=e228] [cursor=pointer]:
+            - /url: "#features"
+        - listitem [ref=e229]:
+          - link "Markets" [ref=e230] [cursor=pointer]:
+            - /url: "#markets"
+        - listitem [ref=e231]:
+          - link "Contact" [ref=e232] [cursor=pointer]:
+            - /url: mailto:hello@adabet.cc
